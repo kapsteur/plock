@@ -11,8 +11,10 @@
   },
   "permissions": [
     "<all_urls>",
-    "declarativeWebRequest",
-    "background"
+    "webRequest",
+    "webRequestBlocking",
+    "background",
+    "tabs"
   ],
   "background": {
     "scripts": ["plock.js"]
