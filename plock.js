@@ -83,11 +83,20 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
 
 //Update tabs url
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
-    if (changeInfo.url != undefined) {
-      tabs[tabId]['url'] = changeInfo.url;
-      tabs[tabId]['count'] = 0;
+    if (changeInfo != undefined && changeInfo.url != undefined) {
+      if (tabs[tabId] == undefined) {
+        tabs[tabId] = {'block':true, 'url':changeInfo.url, 'count':0};
+      } else {
+        tabs[tabId]['url'] = changeInfo.url;
+        tabs[tabId]['count'] = 0;
+      }
       updateBadge();
     }
+});
+
+//Update tabs url
+chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+    delete tabs[tabId];
 });
 
 //Update tabs block
@@ -128,7 +137,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 function updateBadge() {
   chrome.tabs.query({'active': true}, function(allTabs) {
     var tab = allTabs[0];
-    if (tabs[tab.id]['count']>0) {
+    if (tabs[tab.id] != undefined && tabs[tab.id]['count']>0) {
       chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 255], tabId:tab.id});
       chrome.browserAction.setBadgeText({text: ""+tabs[tab.id]['count'], tabId:tab.id});
     } else {
