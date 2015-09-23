@@ -52,6 +52,7 @@ hosts = [
   'r66net.com',
   'videostep.com',
   'scorecardresearch.com',
+  'exoclick.com',
 ];
 
 var tabs = {};
