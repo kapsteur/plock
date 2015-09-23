@@ -77,7 +77,6 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     } else {
       chrome.browserAction.setIcon({path: "plock_ok.png"});
     }
-    //updateCounter();
   });
 });
 
@@ -86,7 +85,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
     if (changeInfo.url != undefined) {
       tabs[tabId]['url'] = changeInfo.url;
       tabs[tabId]['count'] = 0;
-      updateCounter();
+      updateBadge();
     }
 });
 
@@ -102,17 +101,15 @@ chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.reload(tab.id);
 });
 
+//block request if needed
 var block = function(details) {
-  //console.log(details);
   if (tabs[details.tabId] != undefined && tabs[details.tabId]['block']) {
     var parser = document.createElement('a');
     parser.href = details.url;
-
-    //console.log("hostname:"+parser.hostname);
     for (var i=0; i<hosts.length; i++) {
       if (parser.hostname.indexOf(hosts[i]) != -1) {
         tabs[details.tabId]['count']++;
-        updateCounter();
+        updateBadge();
         return {cancel:true};
       }
     }
@@ -120,12 +117,14 @@ var block = function(details) {
   }
 }
 
+//Listen request
 chrome.webRequest.onBeforeRequest.addListener(
   block,
   {urls: ["<all_urls>"]},
   ["blocking"]);
 
-function updateCounter() {
+//Update icon badge
+function updateBadge() {
   chrome.tabs.query({'active': true}, function(allTabs) {
     var tab = allTabs[0];
     if (tabs[tab.id]['count']>0) {
