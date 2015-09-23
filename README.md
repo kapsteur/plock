@@ -1,9 +1,9 @@
 Plock
 ======
 
-Minimalist Ad blocker for Chrome
+Experimental Ad Blocker
 
 
 ## Compatibility
 
-Works only on Chrome Beta for now
+Works only on Chrome
