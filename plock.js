@@ -16,6 +16,8 @@ hosts = new Set([
   'rentabiliweb.com',
   'sascdn.com',
   'taboola.com',
+  '2mdn.net',
+  'ads.20minutes.fr',
   'r66net.com',
   'videostep.com',
   'scorecardresearch.com',
@@ -1189,8 +1191,10 @@ hosts = new Set([
   'dotomi.com',
   'double.net',
   'doubleclick.com',
+  'doubleclick.net',
   'doubleclicks.me',
   'doublemax.net',
+  'schibsted.com',
   'doublepimp.com',
   'doublerads.com',
   'doublerecall.com',
@@ -4752,6 +4756,8 @@ hosts = new Set([
   'adstil.indiatimes.com',
   'adtest.theonion.com',
   'advertise.twitpic.com',
+  'widget.achetezfacile.com',
+  'shoppingbox.leguide.com',
   'adx.kat.ph',
   'aff.lmgtfy.com',
   'ajnad.aljazeera.net',
@@ -4895,6 +4901,10 @@ hosts = new Set([
   's0.2mdn.net'
 ]);
 
+var paths = {
+  'leboncoin.fr': ['/RealMedia/ads/']
+};
+
 var tabs = {};
 
 //Init tabs
@@ -4956,18 +4966,46 @@ var block = function(details) {
   if (tabs[details.tabId] != undefined && tabs[details.tabId]['block']) {
     var parser = document.createElement('a');
     parser.href = details.url;
-    var hostnameArray = parser.hostname.split('.');
+    var hostname = parser.hostname;
+    var masterHostName = null;
+    var hostnameArray = hostname.split('.');
     if (hostnameArray.length > 1) {
-      if (hosts.has(hostnameArray[hostnameArray.length-2]+'.'+hostnameArray[hostnameArray.length-1])) {
+      masterHostName = hostnameArray[hostnameArray.length-2]+'.'+hostnameArray[hostnameArray.length-1];
+    }
+    //If requested url = toto.bibi.com/test
+    if (masterHostName != null) {
+      //test masterHostName = bibi.com
+      if (hosts.has(masterHostName)) {
         tabs[details.tabId]['count']++;
         updateBadge();
         return {cancel:true};
       }
+      //test path = bibi.com/test
+      if (paths[masterHostName] != undefined) {
+        for (var i=0; i<paths[masterHostName].length; i++) {
+          if (parser.pathname.indexOf(paths[masterHostName][i]) != -1) {
+            tabs[details.tabId]['count']++;
+            updateBadge();
+            return {cancel:true};
+          }
+        }
+      }
     }
-    if (hosts.has(parser.hostname)) {
+    //test hostname = toto.bibi.com
+    if (hosts.has(hostname)) {
       tabs[details.tabId]['count']++;
       updateBadge();
       return {cancel:true};
+    }
+    //test path = toto.bibi.com/test
+    if (paths[hostname] != undefined) {
+      for (var i=0; i<paths[hostname].length; i++) {
+        if (pathname.indexOf(paths[hostname][i]) != -1) {
+          tabs[details.tabId]['count']++;
+          updateBadge();
+          return {cancel:true};
+        }
+      }
     }
     return {};
   }
