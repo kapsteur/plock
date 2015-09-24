@@ -4956,31 +4956,19 @@ var block = function(details) {
   if (tabs[details.tabId] != undefined && tabs[details.tabId]['block']) {
     var parser = document.createElement('a');
     parser.href = details.url;
-    /*for (var i=0; i<hosts.length; i++) {
-      if (parser.hostname.indexOf(hosts[i]) != -1) {
-        tabs[details.tabId]['count']++;
-        updateBadge();
-        return {cancel:true};
-      }
-    }*/
     var hostnameArray = parser.hostname.split('.');
     if (hostnameArray.length > 1) {
-      //console.log(hosts.has(hostnameArray[hostnameArray.length-2]+'.'+hostnameArray[hostnameArray.length-1])+":"+hostnameArray[hostnameArray.length-2]+'.'+hostnameArray[hostnameArray.length-1]);
       if (hosts.has(hostnameArray[hostnameArray.length-2]+'.'+hostnameArray[hostnameArray.length-1])) {
         tabs[details.tabId]['count']++;
         updateBadge();
         return {cancel:true};
       }
-    } else {
-      //console.log(hosts.has(parser.hostname)+":"+parser.hostname);
-      if (hosts.has(parser.hostname)) {
-        tabs[details.tabId]['count']++;
-        updateBadge();
-        return {cancel:true};
-      }
     }
-
-
+    if (hosts.has(parser.hostname)) {
+      tabs[details.tabId]['count']++;
+      updateBadge();
+      return {cancel:true};
+    }
     return {};
   }
 }
