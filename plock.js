@@ -1,6 +1,7 @@
 hosts = new Set([
   'googleadservices.net',
   'googlesyndication.net',
+  'htfacile.fr',
   'atdmt.com',
   'ezakus.com',
   'static.kameleoon.com',
@@ -51,6 +52,8 @@ hosts = new Set([
   '2mdn.info',
   '2xbpub.com',
   '32b4oilo.com',
+  'toroadvertisingmedia.com',
+  'oopt.fr',
   '3393.com',
   '350media.com',
   '360ads.com',
