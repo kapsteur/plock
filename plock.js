@@ -1,8 +1,8 @@
 hosts = new Set([
-  'googleadservices',
-  'googlesyndication',
-  'atdmt',
-  'ezakus',
+  'googleadservices.net',
+  'googlesyndication.net',
+  'atdmt.com',
+  'ezakus.com',
   'static.kameleoon.com',
   'ww690.smartadserver.com',
   'ww14.smartadserver.com',
