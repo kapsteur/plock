@@ -1571,6 +1571,7 @@ hosts = new Set([
   'iamediaserve.com',
   'iasbetaffiliates.com',
   'iasrv.com',
+  'fstatic.iadvize.com',
   'ibannerexchange.com',
   'ibatom.com',
   'ibryte.com',
@@ -2603,7 +2604,6 @@ hosts = new Set([
   'socialmedia.com',
   'socialreach.com',
   'socialspark.com',
-  'society6.com',
   'sociocast.com',
   'sociomantic.com',
   'sodud.com',
@@ -4898,14 +4898,18 @@ hosts = new Set([
   'yea.uploadimagex.com',
   'yesbeby.whies.info',
   'yrt7dgkf.exashare.com',
-  's0.2mdn.net'
+  's0.2mdn.net',
+  'api.zanox.com',
+  'cdn.hopscore.com',
+  'emailretargeting.com',
+  'cf.vsavr.com'
 ]);
 
-var paths = {
+paths = {
   'leboncoin.fr': ['/RealMedia/ads/']
 };
 
-var tabs = {};
+tabs = {};
 
 //Init tabs
 chrome.tabs.query({}, function(allTabs) {
@@ -4964,6 +4968,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 //block request if needed
 var block = function(details) {
   if (tabs[details.tabId] != undefined && tabs[details.tabId]['block']) {
+    //Extract request domain
     var parser = document.createElement('a');
     parser.href = details.url;
     var hostname = parser.hostname;
@@ -4976,34 +4981,26 @@ var block = function(details) {
     if (masterHostName != null) {
       //test masterHostName = bibi.com
       if (hosts.has(masterHostName)) {
-        tabs[details.tabId]['count']++;
-        updateBadge();
-        return {cancel:true};
+        return lock(details.tabId);
       }
       //test path = bibi.com/test
       if (paths[masterHostName] != undefined) {
         for (var i=0; i<paths[masterHostName].length; i++) {
           if (parser.pathname.indexOf(paths[masterHostName][i]) != -1) {
-            tabs[details.tabId]['count']++;
-            updateBadge();
-            return {cancel:true};
+            return lock(details.tabId);
           }
         }
       }
     }
     //test hostname = toto.bibi.com
     if (hosts.has(hostname)) {
-      tabs[details.tabId]['count']++;
-      updateBadge();
-      return {cancel:true};
+      return lock(details.tabId);
     }
     //test path = toto.bibi.com/test
     if (paths[hostname] != undefined) {
       for (var i=0; i<paths[hostname].length; i++) {
         if (pathname.indexOf(paths[hostname][i]) != -1) {
-          tabs[details.tabId]['count']++;
-          updateBadge();
-          return {cancel:true};
+          return lock(details.tabId);
         }
       }
     }
@@ -5012,10 +5009,13 @@ var block = function(details) {
 }
 
 //Listen request
-chrome.webRequest.onBeforeRequest.addListener(
-  block,
-  {urls: ["<all_urls>"]},
-  ["blocking"]);
+chrome.webRequest.onBeforeRequest.addListener(block, {urls: ["<all_urls>"]}, ["blocking"]);
+
+function lock(tabId) {
+  tabs[tabId]['count']++;
+  updateBadge();
+  return {cancel:true};
+}
 
 //Update icon badge
 function updateBadge() {
