@@ -1,6 +1,9 @@
 var plock = {
     iframes : {},
     init: function () {
+        this.iframeRefresh()
+    },
+    iframeRefresh: function() {
         var iframes = document.getElementsByTagName("iframe");
         for (var i=0; i<iframes.length; i++) {
             var src = iframes[i].getAttribute('src')
@@ -15,6 +18,12 @@ var plock = {
             var iframe = plock.iframes[params.link];
             if (iframe != undefined) {
                 iframe.parentNode.removeChild(iframe);
+            } else {
+                this.iframeRefresh();
+                var iframe = plock.iframes[params.link];
+                if (iframe != undefined) {
+                    iframe.parentNode.removeChild(iframe);
+                }
             }
         }
     }
