@@ -18,5 +18,13 @@
   ],
   "background": {
     "scripts": ["plock.js"]
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": [
+          "content_plock.js"
+      ]
+    }
+  ]
 }

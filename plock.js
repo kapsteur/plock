@@ -4858,6 +4858,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 //block request if needed
 var block = function(details) {
+  console.log(details);
   if (tabs[details.tabId] != undefined && tabs[details.tabId]['block']) {
     //Extract request domain
     var parser = document.createElement('a');
@@ -4872,26 +4873,26 @@ var block = function(details) {
     if (masterHostName != null) {
       //test masterHostName = bibi.com
       if (hosts.has(masterHostName)) {
-        return lock(details.tabId);
+        return lock(details.tabId, details.url);
       }
       //test path = bibi.com/test
       if (paths[masterHostName] != undefined) {
         for (var i=0; i<paths[masterHostName].length; i++) {
           if (parser.pathname.indexOf(paths[masterHostName][i]) != -1) {
-            return lock(details.tabId);
+            return lock(details.tabId, details.url);
           }
         }
       }
     }
     //test hostname = toto.bibi.com
     if (hosts.has(hostname)) {
-      return lock(details.tabId);
+      return lock(details.tabId, details.url);
     }
     //test path = toto.bibi.com/test
     if (paths[hostname] != undefined) {
       for (var i=0; i<paths[hostname].length; i++) {
         if (pathname.indexOf(paths[hostname][i]) != -1) {
-          return lock(details.tabId);
+          return lock(details.tabId, details.url);
         }
       }
     }
@@ -4902,9 +4903,10 @@ var block = function(details) {
 //Listen request
 chrome.webRequest.onBeforeRequest.addListener(block, {urls: ["<all_urls>"]}, ["blocking"]);
 
-function lock(tabId) {
+function lock(tabId, url) {
   tabs[tabId]['count']++;
   updateBadge();
+  chrome.tabs.sendMessage(tabId, {type: "linkPlocked", params: {link:url}});
   return {cancel:true};
 }
 
