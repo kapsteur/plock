@@ -18,9 +18,9 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
       tabs[tab.id] = {'block':true, 'url':tab.url, 'count':0};
     };
     if (tabs[tab.id]['block']) {
-      chrome.browserAction.setIcon({path: "plock.png"});
+      chrome.browserAction.setIcon({path: "/img/plock.png"});
     } else {
-      chrome.browserAction.setIcon({path: "plock_ok.png"});
+      chrome.browserAction.setIcon({path: "/img/plock_ok.png"});
     }
   });
 });
@@ -52,10 +52,10 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 chrome.browserAction.onClicked.addListener(function(tab) {
   if (tabs[tab.id]['block']) {
     tabs[tab.id]['block'] = false;
-    chrome.browserAction.setIcon({path: "plock_ok.png"});
+    chrome.browserAction.setIcon({path: "/img/plock_ok.png"});
   } else {
     tabs[tab.id]['block'] = true;
-    chrome.browserAction.setIcon({path: "plock.png"});
+    chrome.browserAction.setIcon({path: "/img/plock.png"});
   }
   chrome.tabs.reload(tab.id);
 });
@@ -109,12 +109,11 @@ chrome.webRequest.onBeforeRequest.addListener(block, {urls: ["<all_urls>"]}, ["b
 function lock(tabId, url) {
   tabs[tabId]['count']++;
   updateBadge();
-  if (tabs[tabId]['contentReady']) {
+  if (tabs[tabId].contentReady) {
     chrome.tabs.sendMessage(tabId, {type: "linkPlocked", params: {link:url}});
   } else {
-    tabs[tabId]['lockedUrls'].push(url);
+    tabs[tabId].lockedUrls.push(url);
   }
-  //return {cancel:true};
   return {redirectUrl:"javascript:"};
 }
 
@@ -135,7 +134,7 @@ function updateBadge() {
 
 function contentReady(tabId) {
   var tab = tabs[tabId];
-  tab['contentReady'] = true;
+  tab.contentReady = true;
   for (var i=0; i<tab.lockedUrls.length; i++) {
     chrome.tabs.sendMessage(tabId, {type: "linkPlocked", params: {link:tab.lockedUrls[i]}});
   }

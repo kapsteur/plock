@@ -4,8 +4,7 @@ Plock
 Experimental Ad Blocker
 
 ## Todo
-- Improve url matching
-- Dynamic hosts list
+- Dynamic hosts/paths list
 
 ## Compatibility
 
