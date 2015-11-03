@@ -16,7 +16,7 @@
     "tabs"
   ],
   "background": {
-    "scripts": ["plock.js"]
+    "scripts": ["data.js", "plock.js"]
   },
   "content_scripts": [
     {
