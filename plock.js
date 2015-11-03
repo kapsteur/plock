@@ -4858,7 +4858,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 //block request if needed
 var block = function(details) {
-  console.log(details);
   if (tabs[details.tabId] != undefined && tabs[details.tabId]['block']) {
     //Extract request domain
     var parser = document.createElement('a');
