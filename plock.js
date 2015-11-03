@@ -4836,6 +4836,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
         tabs[tabId]['count'] = 0;
       }
       updateBadge();
+    } else if (changeInfo != undefined && changeInfo.status == "loading" ) {
+      if (tabs[tabId] != undefined) {
+        tabs[tabId]['count'] = 0;
+      }
+      updateBadge();
     }
 });
 
@@ -4905,6 +4910,7 @@ chrome.webRequest.onBeforeRequest.addListener(block, {urls: ["<all_urls>"]}, ["b
 function lock(tabId, url) {
   tabs[tabId]['count']++;
   updateBadge();
+  console.log("linkPlocked:"+url);
   chrome.tabs.sendMessage(tabId, {type: "linkPlocked", params: {link:url}});
   return {cancel:true};
 }

@@ -13,17 +13,16 @@ var plock = {
             }
         }
     },
-    removeIframe: function(params) {
+    removeIframe: function(params, retry) {
         if (params.link != undefined && params.link.length > 0) {
             var iframe = plock.iframes[params.link];
             if (iframe != undefined) {
                 iframe.parentNode.removeChild(iframe);
-            } else {
+            } else if (retry) {
                 this.iframeRefresh();
-                var iframe = plock.iframes[params.link];
-                if (iframe != undefined) {
-                    iframe.parentNode.removeChild(iframe);
-                }
+                window.setTimeout(function(){
+                     plock.removeIframe(params, false);
+                }, 1000);
             }
         }
     }
@@ -34,7 +33,7 @@ plock.init();
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.type == "linkPlocked") {
-            plock.removeIframe(request.params);
+            plock.removeIframe(request.params, true);
         }
     }
 );
