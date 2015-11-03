@@ -4836,12 +4836,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
         tabs[tabId]['count'] = 0;
       }
       updateBadge();
-    } /*else if (changeInfo != undefined && changeInfo.status == "loading" ) {
+    } else if (changeInfo != undefined && changeInfo.status == "loading" ) {
       if (tabs[tabId] != undefined) {
         tabs[tabId]['count'] = 0;
       }
       updateBadge();
-    }*/
+    }
 });
 
 //Update tabs url
