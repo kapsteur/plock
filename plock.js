@@ -22,9 +22,9 @@ function updateData(fallback) {
           return
         }
       }
-    }
-    if (!fallback) {
-      updateData(true);
+      if (!fallback) {
+        updateData(true);
+      }
     }
   }
   xhr.send();
