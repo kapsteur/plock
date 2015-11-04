@@ -11,17 +11,15 @@ function updateData(fallback) {
   if (fallback) {
     url = chrome.extension.getURL('data.json');
   }
-  console.log("updateData fallback:"+fallback);
   var xhr = new XMLHttpRequest();
   xhr.open('get', url, true);
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if(xhr.status == 200) {
-        console.log('url:'+url);
         data = JSON.parse(xhr.responseText);
-        console.log(data);
         if (data.hosts != undefined && data.hosts.length > 0) {
           hosts = new Set(data.hosts);
+          return
         }
       }
     }
