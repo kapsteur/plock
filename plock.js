@@ -45,7 +45,7 @@ chrome.tabs.query({}, function(allTabs) {
 chrome.tabs.onActivated.addListener(function(activeInfo) {
   chrome.tabs.get(activeInfo.tabId, function (tab) {
     if (tabs[tab.id] == undefined) {
-      tabs[tab.id] = {'block':true, 'url':tab.url, 'count':0};
+      tabs[tab.id] = {'block':true, 'url':tab.url, 'lockedUrls':[], 'count':0, 'contentReady':false};
     };
     if (tabs[tab.id]['block']) {
       chrome.browserAction.setIcon({path: "/img/plock.png"});
