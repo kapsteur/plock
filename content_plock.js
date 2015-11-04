@@ -22,6 +22,14 @@ var plock = {
                 plock.elements[src] = elements[i];
             }
         }
+        var elements = document.getElementsByTagName("a");
+        for (var i=0; i<elements.length; i++) {
+            var src = elements[i].getAttribute('href')
+            if (src != undefined && src.length > 0) {
+                if (src.indexOf("?") == -1 && src.substr(src.length-1, src.length) != "/") src += "/"
+                plock.elements[src] = elements[i];
+            }
+        }
         if (callback != undefined) {
             callback();
         }
