@@ -1,32 +1,40 @@
 var plock = {
-    iframes : {},
+    elements : {},
     init: function () {
-        this.iframeRefresh(function (){
+        this.elementsRefresh(function (){
             chrome.runtime.sendMessage({type: "contentReady", params: {}})
         });
     },
-    iframeRefresh: function(callback) {
-        var iframes = document.getElementsByTagName("iframe");
-        for (var i=0; i<iframes.length; i++) {
-            var src = iframes[i].getAttribute('src')
+    elementsRefresh: function(callback) {
+        var elements = document.getElementsByTagName("iframe");
+        for (var i=0; i<elements.length; i++) {
+            var src = elements[i].getAttribute('src')
             if (src != undefined && src.length > 0) {
                 if (src.indexOf("?") == -1 && src.substr(src.length-1, src.length) != "/") src += "/"
-                plock.iframes[src] = iframes[i];
+                plock.elements[src] = elements[i];
+            }
+        }
+        var elements = document.getElementsByTagName("img");
+        for (var i=0; i<elements.length; i++) {
+            var src = elements[i].getAttribute('src')
+            if (src != undefined && src.length > 0) {
+                if (src.indexOf("?") == -1 && src.substr(src.length-1, src.length) != "/") src += "/"
+                plock.elements[src] = elements[i];
             }
         }
         if (callback != undefined) {
             callback();
         }
     },
-    removeIframe: function(params, retry) {
+    removeElement: function(params, retry) {
         if (params.link != undefined && params.link.length > 0) {
-            var iframe = plock.iframes[params.link];
-            if (iframe != undefined && iframe.parentNode != undefined) {
-                iframe.parentNode.removeChild(iframe);
+            var el = plock.elements[params.link];
+            if (el != undefined && el.parentNode != undefined) {
+                el.parentNode.removeChild(el);
             } else if (retry) {
-                this.iframeRefresh();
+                this.elementsRefresh();
                 window.setTimeout(function(){
-                    plock.removeIframe(params, false);
+                    plock.removeElement(params, false);
                 }, 1000);
             }
         }
@@ -38,7 +46,7 @@ plock.init();
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.type == "linkPlocked") {
-            plock.removeIframe(request.params, true);
+            plock.removeElement(request.params, true);
         }
     }
 );
