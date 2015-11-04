@@ -18,10 +18,11 @@
     "webRequest",
     "webRequestBlocking",
     "background",
-    "tabs"
+    "tabs",
+    "https://raw.githubusercontent.com"
   ],
   "background": {
-    "scripts": ["data.js", "plock.js"]
+    "scripts": ["plock.js"]
   },
   "content_scripts": [
     {

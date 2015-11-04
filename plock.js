@@ -1,5 +1,37 @@
+data = {
+  "hosts":[],
+  "paths":{}
+}
 hosts = new Set(data.hosts);
 tabs = {};
+
+//Update hosts set and paths set
+function updateData(fallback) {
+  var url = 'https://raw.githubusercontent.com/kapsteur/plock/master/data.json';
+  if (fallback) {
+    url = chrome.extension.getURL('data.json');
+  }
+  console.log("updateData fallback:"+fallback);
+  var xhr = new XMLHttpRequest();
+  xhr.open('get', url, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4) {
+      if(xhr.status == 200) {
+        console.log('url:'+url);
+        data = JSON.parse(xhr.responseText);
+        console.log(data);
+        if (data.hosts != undefined && data.hosts.length > 0) {
+          hosts = new Set(data.hosts);
+        }
+      }
+    }
+    if (!fallback) {
+      updateData(true);
+    }
+  }
+  xhr.send();
+}
+updateData(false);
 
 //Init tabs
 chrome.tabs.query({}, function(allTabs) {
@@ -132,6 +164,7 @@ function updateBadge() {
   });
 }
 
+//Know when tab is ready
 function contentReady(tabId) {
   var tab = tabs[tabId];
   tab.contentReady = true;
