@@ -52,6 +52,7 @@ chrome.tabs.onActivated.addListener(function(activeInfo) {
     } else {
       chrome.browserAction.setIcon({path: "/img/plock_ok.png"});
     }
+    updateBadge(tab.id);
   });
 });
 
@@ -64,12 +65,12 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, updatedTab) {
         tabs[tabId]['url'] = changeInfo.url;
         tabs[tabId]['count'] = 0;
       }
-      updateBadge();
+      updateBadge(tabId);
     } else if (changeInfo != undefined && changeInfo.status == "loading" ) {
       if (tabs[tabId] != undefined) {
         tabs[tabId]['count'] = 0;
       }
-      updateBadge();
+      updateBadge(tabId);
     }
 });
 
@@ -138,7 +139,7 @@ chrome.webRequest.onBeforeRequest.addListener(block, {urls: ["<all_urls>"]}, ["b
 
 function lock(tabId, url) {
   tabs[tabId]['count']++;
-  updateBadge();
+  updateBadge(tabId);
   if (tabs[tabId].contentReady) {
     chrome.tabs.sendMessage(tabId, {type: "linkPlocked", params: {link:url}});
   } else {
@@ -148,15 +149,17 @@ function lock(tabId, url) {
 }
 
 //Update icon badge
-function updateBadge() {
+function updateBadge(tabId) {
   chrome.tabs.query({'active': true}, function(allTabs) {
     for (var i=0; i<allTabs.length; i++) {
       var tab = allTabs[i];
-      if (tabs[tab.id] != undefined && tabs[tab.id]['count'] > 0) {
-        chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 255], tabId:tab.id});
-        chrome.browserAction.setBadgeText({text: ""+tabs[tab.id]['count'], tabId:tab.id});
-      } else {
-        chrome.browserAction.setBadgeText({text: "", tabId:tab.id});
+      if (tab.id == tabId) {
+        if (tabs[tab.id] != undefined && tabs[tab.id]['count'] > 0) {
+          chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 255], tabId:tab.id});
+          chrome.browserAction.setBadgeText({text: ""+tabs[tab.id]['count'], tabId:tab.id});
+        } else {
+          chrome.browserAction.setBadgeText({text: "", tabId:tab.id});
+        }
       }
     }
   });
