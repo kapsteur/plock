@@ -4,8 +4,8 @@ Plock
 Experimental Ad Blocker
 
 ##Features
-- Dynamic host list (like www.ad2000.com)
-- Dynamic path list (like www.ad2000.com/ad/)
+- Dynamic host list
+- Dynamic path list
 - Remove blocked iframe from DOM
 - Enable/Disable plock in one click
 
@@ -15,3 +15,7 @@ Experimental Ad Blocker
 ## Compatibility
 
 Works only on Chrome
+
+## PS
+
+ᕕ( ᐛ )ᕗ
